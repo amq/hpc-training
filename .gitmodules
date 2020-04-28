@@ -10,3 +10,7 @@
 	path = OpenCL-Headers
 	url = https://github.com/KhronosGroup/OpenCL-Headers.git
 	branch = master
+[submodule "CImg"]
+	path = CImg
+	url = https://github.com/dtschump/CImg.git
+	branch = master

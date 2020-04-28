@@ -17,4 +17,6 @@ include(CPack)
 find_package(OpenCL 1.2 REQUIRED)
 target_link_libraries(GaussianBlur OpenCL::OpenCL)
 
-target_include_directories(GaussianBlur PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/OpenCL-CLHPP/include)
+target_include_directories(GaussianBlur PRIVATE
+                          ${CMAKE_CURRENT_SOURCE_DIR}/OpenCL-CLHPP/include
+                          ${CMAKE_CURRENT_SOURCE_DIR}/CImg)

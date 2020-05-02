@@ -14,9 +14,12 @@ set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
 
-find_package(OpenCL 1.2 REQUIRED)
-target_link_libraries(GaussianBlur OpenCL::OpenCL)
+set(OPENCL_ICD_LOADER_REQUIRE_WDK OFF CACHE BOOL "Build with D3DKMT support, which requires the Windows WDK")
+set(OPENCL_ICD_LOADER_HEADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/OpenCL-Headers CACHE STRING "Path to OpenCL Headers")
+add_subdirectory(OpenCL-ICD-Loader)
 
+target_link_libraries(GaussianBlur OpenCL)
 target_include_directories(GaussianBlur PRIVATE
+                          ${CMAKE_CURRENT_SOURCE_DIR}/OpenCL-Headers
                           ${CMAKE_CURRENT_SOURCE_DIR}/OpenCL-CLHPP/include
                           ${CMAKE_CURRENT_SOURCE_DIR}/CImg)

@@ -15,12 +15,6 @@ jobs:
       with:
         submodules: 'recursive'
 
-    - name: Create OpenCL symlink for macOS
-      shell: bash
-      run: |
-        cd OpenCL-Headers
-        ln -s CL OpenCL
-
     - name: Build
       shell: bash
       run: |

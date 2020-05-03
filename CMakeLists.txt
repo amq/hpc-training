@@ -20,6 +20,6 @@ add_subdirectory(external/OpenCL-ICD-Loader)
 
 target_link_libraries(GaussianBlur OpenCL)
 target_include_directories(GaussianBlur PRIVATE
-                          ${CMAKE_CURRENT_SOURCE_DIR}/external/OpenCL-Headers
-                          ${CMAKE_CURRENT_SOURCE_DIR}/external/OpenCL-CLHPP/include
-                          ${CMAKE_CURRENT_SOURCE_DIR}/external/CImg)
+                           ${CMAKE_CURRENT_SOURCE_DIR}/external/OpenCL-Headers
+                           ${CMAKE_CURRENT_SOURCE_DIR}/external/OpenCL-CLHPP/include
+                           ${CMAKE_CURRENT_SOURCE_DIR}/external/CImg)

@@ -33,5 +33,5 @@ After selecting a kit, you should see *CMake: Debug Ready* in the bottom of the 
 mkdir build
 cd build
 cmake ..
-make
+cmake --build .
 ```

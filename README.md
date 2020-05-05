@@ -3,7 +3,7 @@
 ## Getting Started
 
 ```
-git clone --recursive https://github.com/amq/hpc-training.git
+git clone https://github.com/amq/hpc-training.git
 ```
 
 ## Visual Studio 2019+
@@ -12,6 +12,8 @@ Install components:
 - Desktop development with C++
 
 Then *Open a local folder* or *File - Open - Folder*
+
+It will automatically fetch all of the dependencies, taking a minute or two.
 
 ## VS Code
 

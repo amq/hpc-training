@@ -17,17 +17,6 @@ include(CPack)
 include(FetchContent)
 
 FetchContent_Declare(
-  cimg
-  GIT_REPOSITORY https://github.com/dtschump/CImg.git
-  GIT_TAG        v.2.9.0
-)
-
-FetchContent_GetProperties(cimg)
-if(NOT cimg_POPULATED)
-  FetchContent_Populate(cimg)
-endif()
-
-FetchContent_Declare(
   opencl-clhpp
   GIT_REPOSITORY https://github.com/KhronosGroup/OpenCL-CLHPP.git
   GIT_TAG        v2.0.11
@@ -63,8 +52,8 @@ if(NOT opencl-icd-loader_POPULATED)
   add_subdirectory(${opencl-icd-loader_SOURCE_DIR} ${opencl-icd-loader_BINARY_DIR})
 endif()
 
-target_link_libraries(GaussianBlur OpenCL)
+add_library(TGA STATIC external/tga.cpp external/tga.h)
+target_link_libraries(GaussianBlur PRIVATE OpenCL TGA)
 target_include_directories(GaussianBlur PRIVATE
-                           ${cimg_SOURCE_DIR}
                            ${opencl-clhpp_SOURCE_DIR}/include
                            ${opencl-headers_SOURCE_DIR})

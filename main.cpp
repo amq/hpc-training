@@ -3,55 +3,50 @@
 #define _VARIADIC_MAX 10
 #include <CL/cl.hpp>
 #include <iostream>
-#include <vector>
-
-const int numElements = 32;
+#include "external/tga.h"
 
 int main(void) {
-    cl::Program addProgram(
-        cl::STRING_CLASS(
-            "int add(int a, int b) { return a + b; }"),
-        false);
-    cl::Program vectorWrapper(
-        cl::STRING_CLASS(
-            "int add(int a, int b); kernel void vectorAdd(global const int *inputA, global const int *inputB, global int *output){output[get_global_id(0)] = add(inputA[get_global_id(0)], inputB[get_global_id(0)]);}"),
-        false);
-    std::vector<cl::Program> programs;
-    addProgram.compile();
-    vectorWrapper.compile();
 
-    cl::STRING_CLASS s = addProgram.getInfo<CL_PROGRAM_SOURCE>();
+    tga::TGAImage image;
+    tga::LoadTGA(&image, "test/input.tga");
 
-    programs.push_back(addProgram);
-    programs.push_back(vectorWrapper);
-    cl::Program vectorAddProgram = cl::linkProgram(programs);
+    try {
+        cl::Program GaussianBlur(
+            cl::STRING_CLASS(
+                "kernel void GaussianBlur(\
+                    global const float *input,\
+                    global float *output,\
+                    const int width) {\
+                        float value = input[get_global_id(0)];\
+                        output[get_global_id(0)] = value;\
+            }"),
+            false);
 
-    auto vectorAddKernel =
-        cl::make_kernel<
-            cl::Buffer &,
-            cl::Buffer &,
-            cl::Buffer &>(vectorAddProgram, "vectorAdd");
+        GaussianBlur.build();
 
-    std::vector<int> inputA(numElements, 1);
-    std::vector<int> inputB(numElements, 2);
-    std::vector<int> output(numElements, 0xdeadbeef);
-    cl::Buffer inputABuffer(begin(inputA), end(inputA), true);
-    cl::Buffer inputBBuffer(begin(inputB), end(inputB), true);
-    cl::Buffer outputBuffer(begin(output), end(output), false);
+        auto GaussianBlurKernel =
+            cl::make_kernel<
+                cl::Buffer &,
+                cl::Buffer &,
+                int>(GaussianBlur, "GaussianBlur");
 
-    vectorAddKernel(
-        cl::EnqueueArgs(
-            cl::NDRange(numElements),
-            cl::NDRange(numElements)),
-        inputABuffer,
-        inputBBuffer,
-        outputBuffer);
+        cl::Buffer inputBuffer(begin(image.imageData), end(image.imageData), true);
+        cl::Buffer outputBuffer(begin(image.imageData), end(image.imageData), false);
 
-    cl::copy(outputBuffer, begin(output), end(output));
+        GaussianBlurKernel(
+            cl::EnqueueArgs(
+                cl::NDRange(image.width * image.height)),
+            inputBuffer,
+            outputBuffer,
+            image.width);
 
-    std::cout << "Output:\n";
-    for (int i = 1; i < numElements; ++i) {
-        std::cout << "\t" << output[i] << "\n";
+        cl::copy(outputBuffer, begin(image.imageData), end(image.imageData));
+
+    } catch (cl::Error err) {
+        std::cerr << "ERROR: " << err.what() << "(" << err.err() << ")";
     }
-    std::cout << "\n\n";
+
+    tga::saveTGA(image, "test/output.tga");
+
+    return EXIT_SUCCESS;
 }

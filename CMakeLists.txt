@@ -52,7 +52,7 @@ if(NOT opencl-icd-loader_POPULATED)
   add_subdirectory(${opencl-icd-loader_SOURCE_DIR} ${opencl-icd-loader_BINARY_DIR})
 endif()
 
-add_library(TGA STATIC external/tga.cpp external/tga.h)
+add_library(TGA STATIC external/tga.cpp external/tga.h external/filters.h)
 target_link_libraries(GaussianBlur PRIVATE OpenCL TGA)
 target_include_directories(GaussianBlur PRIVATE
                            ${opencl-clhpp_SOURCE_DIR}/include

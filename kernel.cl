@@ -30,9 +30,9 @@ kernel void GaussianBlur(
     output[idx + 2] = 0.0;
 
     for (int r = -radius; r <= radius; r++) {
-        int x = column + r;
+        int y = row + r;
         for (int c = -radius; c <= radius; c++) {
-            int y = row + c;
+            int x = column + c;
             int byte = (x * 3) + (y * width * 3);
 
             output[idx] += input[byte] * filter[fidx];

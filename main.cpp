@@ -9,6 +9,8 @@
 #include <sstream>
 #include <vector>
 
+#define FILTER_SIZE 5
+
 int main(void) {
 
     tga::TGAImage image, output;
@@ -23,7 +25,7 @@ int main(void) {
     output.width = image.width;
     output.type = image.type;
 
-    int filterSize = 5;
+    int filterSize = FILTER_SIZE;
     std::vector<float> filter = filters::gaussian(filterSize);
 
     std::ifstream file("kernel.cl");

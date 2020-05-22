@@ -1,30 +1,45 @@
 kernel void GaussianBlur(
-    global const char *input,
+    global const unsigned char *input,
+    global unsigned char *output,
     global const float *filter,
-    global char *output,
-    const int size,
-    const int width,
-    const int height) {
+    const int size) {
 
-    int idx = 3 * get_global_id(0);
-    int x = (idx / 3) % width;
-    int y = (idx / 3) / width;
-    int halfSize = size / 2;
+    int width = get_global_size(0);
+    int height = get_global_size(1);
+    int radius = size / 2;
 
-    float r = 0.0;
-    float g = 0.0;
-    float b = 0.0;
+    int column = get_global_id(0); // x
+    int row = get_global_id(1);    // y
+    int idx = (column * 3) + (row * width * 3);
 
-    int i, j;
-    for (j = -halfSize; j <= halfSize; j++) {
-        for (i = -halfSize; i <= halfSize; i++) {
-            r += input[idx] * filter[(j * size) + i];
-            g += input[idx + 1] * filter[(j * size) + i];
-            b += input[idx + 2] * filter[(j * size) + i];
-        }
+    if (
+        column - radius < 0 ||
+        column + radius >= width ||
+        row - radius < 0 ||
+        row + radius >= height) {
+
+        output[idx] = input[idx];
+        output[idx + 1] = input[idx + 1];
+        output[idx + 2] = input[idx + 2];
+        return;
     }
 
-    output[idx] = r;
-    output[idx + 1] = g;
-    output[idx + 2] = b;
+    int fidx = 0;
+    output[idx] = 0.0;
+    output[idx + 1] = 0.0;
+    output[idx + 2] = 0.0;
+
+    for (int r = -radius; r <= radius; r++) {
+        int x = column + r;
+        for (int c = -radius; c <= radius; c++) {
+            int y = row + c;
+            int byte = (x * 3) + (y * width * 3);
+
+            output[idx] += input[byte] * filter[fidx];
+            output[idx + 1] += input[byte + 1] * filter[fidx + 1];
+            output[idx + 2] += input[byte + 2] * filter[fidx + 2];
+
+            fidx++;
+        }
+    }
 }

@@ -38,8 +38,6 @@ int main(void) {
                 cl::Buffer &,
                 cl::Buffer &,
                 cl::Buffer &,
-                int,
-                int,
                 int>(program, "GaussianBlur");
 
         cl::Buffer inputBuffer(begin(image.imageData), end(image.imageData), true);
@@ -48,13 +46,11 @@ int main(void) {
 
         GaussianBlurKernel(
             cl::EnqueueArgs(
-                cl::NDRange(image.width * image.height)),
+                cl::NDRange(image.width, image.height)),
             inputBuffer,
-            filterBuffer,
             outputBuffer,
-            filterSize,
-            image.width,
-            image.height);
+            filterBuffer,
+            filterSize);
 
         cl::copy(outputBuffer, begin(output.imageData), end(output.imageData));
 

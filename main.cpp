@@ -12,7 +12,10 @@
 int main(void) {
 
     tga::TGAImage image, output;
-    tga::LoadTGA(&image, "test/input.tga");
+    if (!tga::LoadTGA(&image, "test/input.tga")) {
+        // error is printed by LoadTGA()
+        return EXIT_FAILURE;
+    }
 
     output.imageData.resize(image.imageData.size());
     output.bpp = image.bpp;
@@ -25,7 +28,10 @@ int main(void) {
 
     std::ifstream file("kernel.cl");
     std::stringstream source;
-    source << file.rdbuf();
+    if (!(source << file.rdbuf())) {
+        std::cerr << "Could not load source" << std::endl;
+        return EXIT_FAILURE;
+    }
 
     cl::Program program;
 
@@ -60,6 +66,7 @@ int main(void) {
         if (err.err() == CL_BUILD_PROGRAM_FAILURE) {
             std::string log = program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(cl::Device::getDefault());
             std::cerr << log << std::endl;
+            return EXIT_FAILURE;
         }
     }
 

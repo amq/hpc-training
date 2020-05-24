@@ -15,13 +15,10 @@ int main(void) {
 
     std::vector<unsigned char> image, output;
     unsigned width, height;
-    unsigned error;
 
     // always returns RGBA
-    error = lodepng::decode(image, width, height, "test/input.png");
-
-    if (error) {
-        std::cerr << "PNG ERROR: " << error << ": " << lodepng_error_text(error) << std::endl;
+    if (auto err = lodepng::decode(image, width, height, "test/input.png")) {
+        std::cerr << "PNG ERROR " << lodepng_error_text(err) << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -75,10 +72,8 @@ int main(void) {
         return EXIT_FAILURE;
     }
 
-    error = lodepng::encode("test/output.png", output, width, height);
-
-    if (error) {
-        std::cerr << "PNG ERROR: " << error << ": " << lodepng_error_text(error) << std::endl;
+    if (auto err = lodepng::encode("test/output.png", output, width, height)) {
+        std::cerr << "PNG ERROR " << lodepng_error_text(err) << std::endl;
         return EXIT_FAILURE;
     }
 

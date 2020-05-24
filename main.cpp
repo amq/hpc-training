@@ -1,8 +1,8 @@
 #define CL_TARGET_OPENCL_VERSION 120
 #define __CL_ENABLE_EXCEPTIONS
 #define _VARIADIC_MAX 10
-#include "external/filters.h"
-#include "external/tga.h"
+#include "filters.hpp"
+#include "lodepng.h"
 #include <CL/cl.hpp>
 #include <fstream>
 #include <iostream>
@@ -13,17 +13,19 @@
 
 int main(void) {
 
-    tga::TGAImage image, output;
-    if (!tga::LoadTGA(&image, "test/input.tga")) {
-        // error is printed by LoadTGA()
+    std::vector<unsigned char> image, output;
+    unsigned width, height;
+    unsigned error;
+
+    // always returns RGBA
+    error = lodepng::decode(image, width, height, "test/input.png");
+
+    if (error) {
+        std::cerr << "PNG ERROR: " << error << ": " << lodepng_error_text(error) << std::endl;
         return EXIT_FAILURE;
     }
 
-    output.imageData.resize(image.imageData.size());
-    output.bpp = image.bpp;
-    output.height = image.height;
-    output.width = image.width;
-    output.type = image.type;
+    output.resize(image.size());
 
     int filterSize = FILTER_SIZE;
     std::vector<float> filter = filters::gaussian(filterSize);
@@ -48,31 +50,37 @@ int main(void) {
                 cl::Buffer &,
                 int>(program, "GaussianBlur");
 
-        cl::Buffer inputBuffer(begin(image.imageData), end(image.imageData), true);
+        cl::Buffer inputBuffer(begin(image), end(image), true);
         cl::Buffer filterBuffer(begin(filter), end(filter), true);
-        cl::Buffer outputBuffer(begin(output.imageData), end(output.imageData), false);
+        cl::Buffer outputBuffer(begin(output), end(output), false);
 
         GaussianBlurKernel(
             cl::EnqueueArgs(
-                cl::NDRange(image.width, image.height)),
+                cl::NDRange(width, height)),
             inputBuffer,
             outputBuffer,
             filterBuffer,
             filterSize);
 
-        cl::copy(outputBuffer, begin(output.imageData), end(output.imageData));
+        cl::copy(outputBuffer, begin(output), end(output));
 
     } catch (cl::Error err) {
-        std::cerr << "ERROR: " << err.what() << "(" << err.err() << ")" << std::endl;
+        std::cerr << "OPENCL ERROR: " << err.what() << "(" << err.err() << ")" << std::endl;
 
         if (err.err() == CL_BUILD_PROGRAM_FAILURE) {
             std::string log = program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(cl::Device::getDefault());
             std::cerr << log << std::endl;
-            return EXIT_FAILURE;
         }
+
+        return EXIT_FAILURE;
     }
 
-    tga::saveTGA(output, "test/output.tga");
+    error = lodepng::encode("test/output.png", output, width, height);
+
+    if (error) {
+        std::cerr << "PNG ERROR: " << error << ": " << lodepng_error_text(error) << std::endl;
+        return EXIT_FAILURE;
+    }
 
     return EXIT_SUCCESS;
 }

@@ -9,6 +9,8 @@
 #include <sstream>
 #include <vector>
 
+#define INPUT "test/input.png"
+#define OUTPUT "test/output.png"
 #define FILTER_SIZE 5
 
 int main(void) {
@@ -17,8 +19,8 @@ int main(void) {
     unsigned width, height;
 
     // always returns RGBA
-    if (auto err = lodepng::decode(image, width, height, "test/input.png")) {
-        std::cerr << "PNG ERROR " << lodepng_error_text(err) << std::endl;
+    if (auto err = lodepng::decode(image, width, height, INPUT)) {
+        std::cerr << "PNG ERROR: " << lodepng_error_text(err) << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -72,8 +74,8 @@ int main(void) {
         return EXIT_FAILURE;
     }
 
-    if (auto err = lodepng::encode("test/output.png", output, width, height)) {
-        std::cerr << "PNG ERROR " << lodepng_error_text(err) << std::endl;
+    if (auto err = lodepng::encode(OUTPUT, output, width, height)) {
+        std::cerr << "PNG ERROR: " << lodepng_error_text(err) << std::endl;
         return EXIT_FAILURE;
     }
 

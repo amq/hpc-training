@@ -40,16 +40,12 @@ std::vector<float> gaussian(int size) {
     switch (size) {
     case 3:
         return gaussian3;
-        break;
     case 5:
         return gaussian5;
-        break;
     case 7:
         return gaussian7;
-        break;
     case 9:
         return gaussian9;
-        break;
     default:
         return std::vector<float>();
     }

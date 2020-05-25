@@ -38,9 +38,9 @@ kernel void GaussianBlur(
             int byte = (x * 4) + (y * width * 4);
 
             output[idx] += input[byte] * filter[fidx];
-            output[idx + 1] += input[byte + 1] * filter[fidx + 1];
-            output[idx + 2] += input[byte + 2] * filter[fidx + 2];
-            output[idx + 3] += input[byte + 3] * filter[fidx + 3];
+            output[idx + 1] += input[byte + 1] * filter[fidx];
+            output[idx + 2] += input[byte + 2] * filter[fidx];
+            output[idx + 3] += input[byte + 3] * filter[fidx];
 
             fidx++;
         }

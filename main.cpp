@@ -28,7 +28,7 @@ int main(void) {
     std::vector<float> output(input.size());
 
     int filterSize = FILTER_SIZE;
-    std::vector<float> filter = filters::gaussian(filterSize);
+    std::vector<float> filter = filters::gaussian2d(filterSize);
 
     std::ifstream file("kernel.cl");
     std::stringstream source;
@@ -48,7 +48,7 @@ int main(void) {
                 cl::Buffer &,
                 cl::Buffer &,
                 cl::Buffer &,
-                int>(program, "GaussianBlur");
+                int>(program, "GaussianBlur2D");
 
         cl::Buffer inputBuffer(begin(input), end(input), true);
         cl::Buffer outputBuffer(begin(output), end(output), false);

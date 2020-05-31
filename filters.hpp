@@ -4,19 +4,31 @@
 
 namespace filters {
 // pre-computed using http://dev.theomader.com/gaussian-kernel-calculator/
-std::vector<float> gaussian3{
+std::vector<float> gaussian1d_3{
+    0.27901f, 0.44198f, 0.27901};
+
+std::vector<float> gaussian1d_5{
+    0.06136f, 0.24477f, 0.38774f, 0.24477f, 0.06136};
+
+std::vector<float> gaussian1d_7{
+    0.00598f, 0.060626f, 0.241843f, 0.383103f, 0.241843f, 0.060626f, 0.00598};
+
+std::vector<float> gaussian1d_9{
+    0.000229f, 0.005977f, 0.060598f, 0.241732f, 0.382928f, 0.241732f, 0.060598f, 0.005977f, 0.000229};
+
+std::vector<float> gaussian2d_3{
     0.077847f, 0.123317f, 0.077847f,
     0.123317f, 0.195346f, 0.123317f,
     0.077847f, 0.123317f, 0.077847f};
 
-std::vector<float> gaussian5{
+std::vector<float> gaussian2d_5{
     0.003765f, 0.015019f, 0.023792f, 0.015019f, 0.003765f,
     0.015019f, 0.059912f, 0.094907f, 0.059912f, 0.015019f,
     0.023792f, 0.094907f, 0.150342f, 0.094907f, 0.023792f,
     0.015019f, 0.059912f, 0.094907f, 0.059912f, 0.015019f,
     0.003765f, 0.015019f, 0.023792f, 0.015019f, 0.003765f};
 
-std::vector<float> gaussian7{
+std::vector<float> gaussian2d_7{
     0.000036f, 0.000363f, 0.001446f, 0.002291f, 0.001446f, 0.000363f, 0.000036f,
     0.000363f, 0.003676f, 0.014662f, 0.023226f, 0.014662f, 0.003676f, 0.000363f,
     0.001446f, 0.014662f, 0.058488f, 0.092651f, 0.058488f, 0.014662f, 0.001446f,
@@ -25,7 +37,7 @@ std::vector<float> gaussian7{
     0.000363f, 0.003676f, 0.014662f, 0.023226f, 0.014662f, 0.003676f, 0.000363f,
     0.000036f, 0.000363f, 0.001446f, 0.002291f, 0.001446f, 0.000363f, 0.000036f};
 
-std::vector<float> gaussian9{
+std::vector<float> gaussian2d_9{
     0.000000f, 0.000001f, 0.000014f, 0.000055f, 0.000088f, 0.000055f, 0.000014f, 0.000001f, 0.000000f,
     0.000001f, 0.000036f, 0.000362f, 0.001445f, 0.002289f, 0.001445f, 0.000362f, 0.000036f, 0.000001f,
     0.000014f, 0.000362f, 0.003672f, 0.014648f, 0.023205f, 0.014648f, 0.003672f, 0.000362f, 0.000014f,
@@ -36,16 +48,31 @@ std::vector<float> gaussian9{
     0.000001f, 0.000036f, 0.000362f, 0.001445f, 0.002289f, 0.001445f, 0.000362f, 0.000036f, 0.000001f,
     0.000000f, 0.000001f, 0.000014f, 0.000055f, 0.000088f, 0.000055f, 0.000014f, 0.000001f, 0.000000f};
 
-std::vector<float> gaussian(int size) {
+std::vector<float> gaussian1d(int size) {
     switch (size) {
     case 3:
-        return gaussian3;
+        return gaussian1d_3;
     case 5:
-        return gaussian5;
+        return gaussian1d_5;
     case 7:
-        return gaussian7;
+        return gaussian1d_7;
     case 9:
-        return gaussian9;
+        return gaussian1d_9;
+    default:
+        return std::vector<float>();
+    }
+}
+
+std::vector<float> gaussian2d(int size) {
+    switch (size) {
+    case 3:
+        return gaussian2d_3;
+    case 5:
+        return gaussian2d_5;
+    case 7:
+        return gaussian2d_7;
+    case 9:
+        return gaussian2d_9;
     default:
         return std::vector<float>();
     }

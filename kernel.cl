@@ -1,8 +1,8 @@
 kernel void GaussianBlur2D(
     global const float4 *input,
     global float4 *output,
-    global const float *filter,
-    const int filter_size) {
+    constant float *filter,
+    int filter_size) {
 
     const int2 pos   = (int2)(get_global_id(0), get_global_id(1)); // x, y
     const int2 size  = (int2)(get_global_size(0), get_global_size(1)); // w, h

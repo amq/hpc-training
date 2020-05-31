@@ -15,7 +15,7 @@
 
 int main(void) {
 
-    std::vector<unsigned char> image, output;
+    std::vector<unsigned char> image;
     unsigned width, height;
 
     // always returns RGBA
@@ -24,7 +24,8 @@ int main(void) {
         return EXIT_FAILURE;
     }
 
-    output.resize(image.size());
+    std::vector<float> input(image.begin(), image.end());
+    std::vector<float> output(input.size());
 
     int filterSize = FILTER_SIZE;
     std::vector<float> filter = filters::gaussian(filterSize);
@@ -49,9 +50,9 @@ int main(void) {
                 cl::Buffer &,
                 int>(program, "GaussianBlur");
 
-        cl::Buffer inputBuffer(begin(image), end(image), true);
-        cl::Buffer filterBuffer(begin(filter), end(filter), true);
+        cl::Buffer inputBuffer(begin(input), end(input), true);
         cl::Buffer outputBuffer(begin(output), end(output), false);
+        cl::Buffer filterBuffer(begin(filter), end(filter), true);
 
         GaussianBlurKernel(
             cl::EnqueueArgs(
@@ -74,7 +75,9 @@ int main(void) {
         return EXIT_FAILURE;
     }
 
-    if (auto err = lodepng::encode(OUTPUT, output, width, height)) {
+    image.assign(output.begin(), output.end());
+
+    if (auto err = lodepng::encode(OUTPUT, image, width, height)) {
         std::cerr << "PNG ERROR: " << lodepng_error_text(err) << std::endl;
         return EXIT_FAILURE;
     }

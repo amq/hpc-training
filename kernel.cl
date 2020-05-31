@@ -1,4 +1,4 @@
-kernel void GaussianBlur(
+kernel void GaussianBlur2D(
     global const float4 *input,
     global float4 *output,
     global const float *filter,

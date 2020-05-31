@@ -28,7 +28,7 @@ int main(void) {
     std::vector<float> output(input.size());
 
     int filterSize = FILTER_SIZE;
-    std::vector<float> filter = filters::gaussian2d(filterSize);
+    std::vector<float> filter = filters::gaussian1d(filterSize);
 
     std::ifstream file("kernel.cl");
     std::stringstream source;
@@ -43,24 +43,36 @@ int main(void) {
         program = cl::Program(cl::STRING_CLASS(source.str()));
         program.build();
 
-        auto GaussianBlurKernel =
+        cl::Buffer inputBuffer(begin(input), end(input), false);
+        cl::Buffer intermediaryBuffer(begin(output), end(output), false);
+        cl::Buffer outputBuffer(begin(output), end(output), false);
+        cl::Buffer filterBuffer(begin(filter), end(filter), true);
+
+        auto GaussianBlur1DKernel =
             cl::make_kernel<
                 cl::Buffer &,
                 cl::Buffer &,
                 cl::Buffer &,
-                int>(program, "GaussianBlur2D");
+                int,
+                int>(program, "GaussianBlur1D");
 
-        cl::Buffer inputBuffer(begin(input), end(input), true);
-        cl::Buffer outputBuffer(begin(output), end(output), false);
-        cl::Buffer filterBuffer(begin(filter), end(filter), true);
-
-        GaussianBlurKernel(
+        GaussianBlur1DKernel(
             cl::EnqueueArgs(
                 cl::NDRange(width, height)),
             inputBuffer,
+            intermediaryBuffer,
+            filterBuffer,
+            filterSize,
+            0);
+
+        GaussianBlur1DKernel(
+            cl::EnqueueArgs(
+                cl::NDRange(width, height)),
+            intermediaryBuffer,
             outputBuffer,
             filterBuffer,
-            filterSize);
+            filterSize,
+            1);
 
         cl::copy(outputBuffer, begin(output), end(output));
 

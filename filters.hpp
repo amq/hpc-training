@@ -5,16 +5,16 @@
 namespace filters {
 // pre-computed using http://dev.theomader.com/gaussian-kernel-calculator/
 std::vector<float> gaussian1d_3{
-    0.27901f, 0.44198f, 0.27901};
+    0.27901f, 0.44198f, 0.27901f};
 
 std::vector<float> gaussian1d_5{
-    0.06136f, 0.24477f, 0.38774f, 0.24477f, 0.06136};
+    0.06136f, 0.24477f, 0.38774f, 0.24477f, 0.06136f};
 
 std::vector<float> gaussian1d_7{
-    0.00598f, 0.060626f, 0.241843f, 0.383103f, 0.241843f, 0.060626f, 0.00598};
+    0.00598f, 0.060626f, 0.241843f, 0.383103f, 0.241843f, 0.060626f, 0.00598f};
 
 std::vector<float> gaussian1d_9{
-    0.000229f, 0.005977f, 0.060598f, 0.241732f, 0.382928f, 0.241732f, 0.060598f, 0.005977f, 0.000229};
+    0.000229f, 0.005977f, 0.060598f, 0.241732f, 0.382928f, 0.241732f, 0.060598f, 0.005977f, 0.000229f};
 
 std::vector<float> gaussian2d_3{
     0.077847f, 0.123317f, 0.077847f,

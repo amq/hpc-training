@@ -8,7 +8,7 @@ kernel void GaussianBlur2D(
     const int2 size  = (int2)(get_global_size(0), get_global_size(1)); // w, h
     const int radius = filter_size / 2;
 
-    float4 pixel = (float4)(0.0, 0.0, 0.0, 0.0);
+    float4 pixel = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
 
     for (int row = -radius, i = 0; row <= radius; row++) {
         int y = min(max(pos.y + row, 0), size.y);

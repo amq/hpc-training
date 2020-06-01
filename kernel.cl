@@ -23,7 +23,6 @@ kernel void GaussianBlur1D(
         }
     }
 
-
     output[pos.x + pos.y * size.x] = pixel;
 }
 

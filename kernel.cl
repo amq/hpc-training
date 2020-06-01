@@ -27,7 +27,7 @@ kernel void GaussianBlur1D_local(
     } else {
         for (int row = -radius, i = 0; row <= radius; row++) {
             int y = min(max(loc.y + row, 0), 15);
-            pixel += tmp[loc.x][y]* filter[i++];
+            pixel += tmp[loc.x][y] * filter[i++];
         }
     }
 

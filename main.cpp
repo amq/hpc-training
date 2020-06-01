@@ -33,13 +33,20 @@ int main(void) {
     std::ifstream file("kernel.cl");
     std::stringstream source;
     if (!(source << file.rdbuf())) {
-        std::cerr << "Could not load source" << std::endl;
+        std::cerr << "FILE ERROR: Could not load source" << std::endl;
         return EXIT_FAILURE;
     }
 
     cl::Program program;
 
     try {
+        auto device = cl::Device::getDefault();
+        std::vector<::size_t> itemSizes = device.getInfo<CL_DEVICE_MAX_WORK_ITEM_SIZES>();
+
+        if (itemSizes[0] < width || itemSizes[1] < height) {
+            std::cout << "OPENCL WARNING: Image dimensions possibly too large" << std::endl;
+        }
+
         program = cl::Program(cl::STRING_CLASS(source.str()));
         program.build();
 

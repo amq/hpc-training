@@ -61,11 +61,12 @@ int main(void) {
                 cl::Buffer &,
                 cl::Buffer &,
                 int,
-                int>(program, "GaussianBlur1D");
+                int>(program, "GaussianBlur1D_local");
 
         GaussianBlur1DKernel(
             cl::EnqueueArgs(
-                cl::NDRange(width, height)),
+                cl::NDRange(width, height),
+                cl::NDRange(16, 16)),
             inputBuffer,
             intermediaryBuffer,
             filterBuffer,
@@ -74,7 +75,8 @@ int main(void) {
 
         GaussianBlur1DKernel(
             cl::EnqueueArgs(
-                cl::NDRange(width, height)),
+                cl::NDRange(width, height),
+                cl::NDRange(16, 16)),
             intermediaryBuffer,
             outputBuffer,
             filterBuffer,

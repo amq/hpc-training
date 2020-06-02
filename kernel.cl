@@ -40,12 +40,12 @@ kernel void GaussianBlur1D_global(
     global const float4 *input,
     global float4 *output,
     constant float *filter,
-    int filter_size,
+    int diameter,
     int horizontal) {
 
     const int2 pos   = (int2)(get_global_id(0), get_global_id(1)); // x, y
     const int2 size  = (int2)(get_global_size(0), get_global_size(1)); // w, h
-    const int radius = filter_size / 2;
+    const int radius = diameter / 2;
 
     float4 pixel = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
 

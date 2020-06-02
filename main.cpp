@@ -12,6 +12,7 @@
 #define INPUT "test/input.png"
 #define OUTPUT "test/output.png"
 #define FILTER_SIZE 5
+#define LOCAL_SIZE 16
 
 int main(void) {
 
@@ -43,8 +44,9 @@ int main(void) {
         auto device = cl::Device::getDefault();
         std::vector<::size_t> itemSizes = device.getInfo<CL_DEVICE_MAX_WORK_ITEM_SIZES>();
 
-        if (itemSizes[0] < width || itemSizes[1] < height) {
-            std::cout << "OPENCL WARNING: Image dimensions possibly too large" << std::endl;
+        if (itemSizes[0] < LOCAL_SIZE || itemSizes[1] < LOCAL_SIZE) {
+            std::cerr << "OPENCL ERROR: Local size not supported by device" << std::endl;
+            return EXIT_FAILURE;
         }
 
         program = cl::Program(cl::STRING_CLASS(source.str()));
@@ -66,7 +68,7 @@ int main(void) {
         GaussianBlur1DKernel(
             cl::EnqueueArgs(
                 cl::NDRange(width, height),
-                cl::NDRange(16, 16)),
+                cl::NDRange(LOCAL_SIZE, LOCAL_SIZE)),
             inputBuffer,
             intermediaryBuffer,
             filterBuffer,
@@ -76,7 +78,7 @@ int main(void) {
         GaussianBlur1DKernel(
             cl::EnqueueArgs(
                 cl::NDRange(width, height),
-                cl::NDRange(16, 16)),
+                cl::NDRange(LOCAL_SIZE, LOCAL_SIZE)),
             intermediaryBuffer,
             outputBuffer,
             filterBuffer,

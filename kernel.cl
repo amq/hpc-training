@@ -11,7 +11,7 @@ kernel void GaussianBlur1D_local(
 
     const int2 loc   = (int2)(get_local_id(0), get_local_id(1)); // x, y
     const int offset = block.x + block.y * size.x;
-    
+
     local float4 tmp[16][16];
     tmp[loc.x][loc.y] = input[offset + (loc.x + loc.y * size.x)];
 
